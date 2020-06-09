@@ -5,13 +5,20 @@
  */
 package com.autonowire.supersecretmessages;
 
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import javax.imageio.ImageIO;
 import org.apache.commons.codec.binary.Base64;
 
 
@@ -26,6 +33,7 @@ public class MessageGenerator {
     }
     
     public void execute() throws IOException {
+        
         File file = new File(
 	getClass().getClassLoader().getResource("data.txt").getFile()
         );
@@ -34,8 +42,34 @@ public class MessageGenerator {
         Base64 encoder = new Base64();
         String val = encoder.encodeAsString(text.getBytes());
         System.out.println("Encoded: " + val);
+        String secretKey = val;
         String val2 = new String(encoder.decode(val));
         System.out.println("Decoded: " + val2);
+        
+        String encryptedString = AES.encrypt(text, secretKey);
+        System.out.println("Encrypted AES: " + encryptedString);
+        String decryptedString = AES.decrypt(encryptedString, secretKey) ;
+        System.out.println("Decrypted AES: " + decryptedString);
+    }
+    
+    
+    
+    public byte[] convertTextToImage(String text) throws IOException {
+        byte[] imageBytes;
+        OutputStream os = null;
+        BufferedImage bufferedImage = new BufferedImage(170, 30,
+        BufferedImage.TYPE_INT_RGB);
+    
+        Graphics graphics = bufferedImage.getGraphics();
+        graphics.setColor(Color.LIGHT_GRAY);
+        graphics.fillRect(0, 0, 200, 50);
+        graphics.setColor(Color.BLACK);
+        graphics.setFont(new Font("Arial Black", Font.BOLD, 20));
+        graphics.drawString(text, 10, 25);
+        ImageIO.write(bufferedImage, "jpg", os);
+        ByteArrayOutputStream bos = (ByteArrayOutputStream)os;
+        imageBytes = bos.toByteArray();
+        return imageBytes;
     }
     
     public String readText(String fileName) throws IOException {

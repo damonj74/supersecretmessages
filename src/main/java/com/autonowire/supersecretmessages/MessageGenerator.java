@@ -35,6 +35,9 @@ public class MessageGenerator {
         System.out.println("Encrypted Result: " + encryptedResult);
         String decryptedResult = mg.superDecryptText(encryptedResult, secretKey);
         System.out.println("Decrypted Result: " + decryptedResult);
+        
+        //prev2.0 additions
+        System.out.println("Hello v2.0-Snapshot");
     }
     
     private void executeTest() throws IOException {

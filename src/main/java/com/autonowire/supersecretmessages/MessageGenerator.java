@@ -38,6 +38,8 @@ public class MessageGenerator {
         
         //prev2.0 additions
         System.out.println("Hello v2.0-Snapshot");
+        //prev2.0 additions part 2
+        System.out.println("Hello v2.0-Snapshot Part2");
     }
     
     private void executeTest() throws IOException {

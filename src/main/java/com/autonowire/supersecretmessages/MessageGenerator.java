@@ -29,10 +29,15 @@ import org.apache.commons.codec.binary.Base64;
 public class MessageGenerator {
     public static void main(String[] args) throws IOException {
         MessageGenerator mg = new MessageGenerator();
-        mg.execute();
+        String text = "You can blame my friends on the other side!";
+        String secretKey = "PrincesAndTheFrog";
+        String encryptedResult = mg.superEncryptText(text, secretKey);
+        System.out.println("Encrypted Result: " + encryptedResult);
+        String decryptedResult = mg.superDecryptText(encryptedResult, secretKey);
+        System.out.println("Decrypted Result: " + decryptedResult);
     }
     
-    public void execute() throws IOException {
+    private void executeTest() throws IOException {
         
         File file = new File(
 	getClass().getClassLoader().getResource("data.txt").getFile()
@@ -52,9 +57,26 @@ public class MessageGenerator {
         System.out.println("Decrypted AES: " + decryptedString);
     }
     
+    public String superEncryptText(String text, String secretKey) {
+        //System.out.println("Incoming Text: " + text);
+        Base64 encoder = new Base64();
+        String val = encoder.encodeAsString(text.getBytes());
+        //System.out.println("Base Encoded: " + val);
+        String encryptedString = AES.encrypt(val, secretKey);
+        //System.out.println("Encrypted AES: " + encryptedString);
+        return encryptedString;
+    }
     
+    public String superDecryptText(String encryptedString, String secretKey) {
+        Base64 encoder = new Base64();
+        String decryptedString = AES.decrypt(encryptedString, secretKey) ;
+        //System.out.println("Decrypted AES: " + decryptedString);
+        String baseDecodedString = new String(encoder.decode(decryptedString));
+        //System.out.println("Base Decoded: " + baseDecodedString);
+        return baseDecodedString;
+    }
     
-    public byte[] convertTextToImage(String text) throws IOException {
+    private byte[] convertTextToImage(String text) throws IOException {
         byte[] imageBytes;
         OutputStream os = null;
         BufferedImage bufferedImage = new BufferedImage(170, 30,
@@ -72,7 +94,7 @@ public class MessageGenerator {
         return imageBytes;
     }
     
-    public String readText(String fileName) throws IOException {
+    private String readText(String fileName) throws IOException {
         String text = "";
         Path path = Paths.get(fileName);
         byte[] bytes = Files.readAllBytes(path);
